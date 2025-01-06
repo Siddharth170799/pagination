@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import BasicSelect from "./DropDown";
 
 const Pagination = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [Length, setLength] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const buttons = [];
 
   const api = async () => {
@@ -13,6 +14,7 @@ const Pagination = () => {
       const details = await axios.get("https://fakestoreapi.com/products/");
       setData(details.data);
       setLength(details.data.length);
+
       const details1 = details.data.slice(0, itemsPerPage);
       setFilteredData(details1);
     } catch (error) {
@@ -33,12 +35,22 @@ const Pagination = () => {
     setFilteredData(data1);
   };
 
+  const itemsSettingPerPage = (itemsperpage) => {
+    setItemsPerPage(itemsperpage);
+    const details = data.slice(0, itemsperpage);
+    setFilteredData(details);
+  };
+
   useEffect(() => {
     api();
   }, []);
 
   return (
-    <div>
+    <div style={{margin:"2%"}}>
+        <h2 style={{textAlign:"center"}}>List Of Products</h2>
+        <div style={{display:"flex",justifyContent:"end"}}>
+      <BasicSelect func={itemsSettingPerPage} />
+      </div>
       <div
         style={{
           display: "flex",
@@ -65,7 +77,7 @@ const Pagination = () => {
                   alt={item.title}
                   style={{
                     width: "100px",
-                    height: "100px",
+                    height: "70px",
                     objectFit: "contain",
                   }}
                 />
